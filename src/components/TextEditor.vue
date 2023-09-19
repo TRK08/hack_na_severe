@@ -26,9 +26,7 @@ const props = defineProps<{html: string}>()
 const emit = defineEmits(['update:html'])
 
 
-const content = ref(props.html || '')
-
-
+const content = ref(props.html)
 watch(content, () => {
   emit('update:html', content.value)
 }, { immediate: true })

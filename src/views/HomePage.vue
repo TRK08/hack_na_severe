@@ -40,7 +40,7 @@
       </template>
       <template v-if="fetchStatus === 'success' && result">
         <TextEditorInstruction style="margin-bottom: 2rem" />
-        <TextEditor v-model:html="result.html" />
+        <TextEditor v-model:html="result" />
         <n-space justify="center" style="margin-top: 2rem">
           <n-button @click="sendNewRequest" type="primary" style="width: 300px; border-radius: 0.5rem;" >Отправить новый запрос</n-button>
         </n-space>
@@ -60,11 +60,6 @@ import TextEditor from "@/components/TextEditor.vue";
 import BaseInstruction from "@/components/BaseInstruction.vue";
 import TextEditorInstruction from "@/components/TextEditorInstruction.vue";
 
-
-interface IResult {
-  html: string
-}
-
 const notification = useNotification()
 
 const text = ref('')
@@ -73,25 +68,26 @@ const checkboxes = ref({
   html_formatting: true
 })
 const fetchStatus = ref('init')
-const result = ref<IResult | null>(null);
+const result = ref<string | null>(null);
 
-const downloadFile = async (evt: UploadFileInfo): Promise<IResult | void> => {
+const downloadFile = async (evt: UploadFileInfo): Promise<string | void> => {
   fetchStatus.value = 'loading'
   try {
     const formData = new FormData();
     // @ts-ignore
     formData.append('file', evt?.file?.file);
-    formData.append('grammar', checkboxes.value.grammar.toString());
-    formData.append('html_formatting', checkboxes.value.html_formatting.toString());
 
-    const res = await axios.post('https://13-50-75-136.nip.io/api/v1/ml/file', formData, {
+    //@ts-ignore
+    const parameters = Object.keys(checkboxes.value).map(key => key + '=' + checkboxes.value[key]).join('&');
+
+    const res = await axios.post(`https://13-50-75-136.nip.io/api/v1/ml/file?${parameters}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       }
     });
 
     if (res.data) {
-      result.value = res.data
+      result.value = res.data.result
       setTimeout(() => {
         fetchStatus.value = 'success'
       }, 1000)
@@ -101,17 +97,17 @@ const downloadFile = async (evt: UploadFileInfo): Promise<IResult | void> => {
     console.log(e)
   }
 };
-const sendText = async (): Promise<IResult | void> => {
+const sendText = async (): Promise<string | void> => {
   fetchStatus.value = 'loading'
   try {
     const res = await axios.post('https://13-50-75-136.nip.io/api/v1/ml/text', {
       text: text.value,
-      grammar: checkboxes.value.grammar,
+      grammatic: checkboxes.value.grammar,
       html_formatting: checkboxes.value.html_formatting
     });
 
     if (res.data) {
-      result.value = res.data
+      result.value = res.data.result
       setTimeout(() => {
         fetchStatus.value = 'success'
       }, 1000)
