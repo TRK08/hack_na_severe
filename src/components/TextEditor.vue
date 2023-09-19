@@ -1,6 +1,6 @@
 <template>
   <div class="text-editor">
-    <quill-editor v-model:content="content" contentType="html" theme="snow" :modules="modules" toolbar="essential" style="min-height: 600px;"></quill-editor>
+    <quill-editor v-model:content="content" theme="snow" :modules="modules" toolbar="essential" style="min-height: 600px;"></quill-editor>
   </div>
 </template>
 
@@ -43,7 +43,18 @@ const content = ref('')
 .ql-html-buttonGroup {
   button {
     cursor: pointer;
+  }
+}
 
+.ql-editor {
+  strong {
+    font-weight: bold!important;
+  }
+  em {
+    font-style: italic!important;
+  }
+  u {
+    text-decoration: underline;
   }
 }
 </style>

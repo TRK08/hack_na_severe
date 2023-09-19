@@ -1,10 +1,15 @@
 <template>
   <div class="home-page">
-    <AppHeader title="Главная страница" />
+    <AppHeader title="ULTRA Форматирование" />
     <div class="home-page__content">
       <n-spin v-if="fetchStatus === 'loading'" size="large" style="width: 100%;" />
       <template v-if="fetchStatus === 'init'">
-        <h3>Выберите необходимые вам параметры и добавьте в удобном для вас формате</h3>
+        <BaseInstruction style="margin-bottom: 2rem" />
+        <n-card style="margin-bottom: 1rem">
+          <n-checkbox v-model:checked="grammarCheckbox">
+            Исправление грамматических ошибок
+          </n-checkbox>
+        </n-card>
         <n-tabs type="segment" animated>
           <n-tab-pane  name="oasis" tab="Ввод текста">
             <n-input v-model:value="text" type="textarea" placeholder="Введите текст" style="min-height: 250px" />
@@ -31,6 +36,7 @@
         </n-tabs>
       </template>
       <template v-if="fetchStatus === 'success'">
+        <TextEditorInstruction style="margin-bottom: 2rem" />
         <TextEditor />
         <n-space justify="center" style="margin-top: 2rem">
           <n-button @click="sendNewRequest" type="primary" style="width: 300px; border-radius: 0.5rem;" >Отправить новый запрос</n-button>
@@ -48,6 +54,8 @@ import { useNotification } from 'naive-ui'
 import type { UploadFileInfo } from 'naive-ui'
 import AppHeader from "@/components/UI/AppHeader.vue";
 import TextEditor from "@/components/TextEditor.vue";
+import BaseInstruction from "@/components/BaseInstruction.vue";
+import TextEditorInstruction from "@/components/TextEditorInstruction.vue";
 
 
 interface IResult {
@@ -57,6 +65,7 @@ interface IResult {
 const notification = useNotification()
 
 const text = ref('')
+const grammarCheckbox = ref(true)
 const fetchStatus = ref('success')
 const result = ref<IResult | null>(null);
 
