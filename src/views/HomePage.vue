@@ -4,6 +4,7 @@
     <div class="home-page__content">
       <n-spin v-if="fetchStatus === 'loading'" size="large" style="width: 100%;" />
       <template v-if="fetchStatus === 'init'">
+        <h3>Выберите необходимые вам параметры и добавьте в удобном для вас формате</h3>
         <n-tabs type="segment" animated>
           <n-tab-pane  name="oasis" tab="Ввод текста">
             <n-input v-model:value="text" type="textarea" placeholder="Введите текст" style="min-height: 250px" />
@@ -22,7 +23,7 @@
                   Кликните или перетащите файл
                 </n-text>
                 <n-p depth="3" style="margin: 8px 0 0 0">
-                  Доступный формат файла: .txt
+                  Доступный формат файла: .txt, .docx
                 </n-p>
               </n-upload-dragger>
             </n-upload>
@@ -30,38 +31,7 @@
         </n-tabs>
       </template>
       <template v-if="fetchStatus === 'success'">
-          <n-space align="center" :size="[50, 10]" style="margin-bottom: 50px;">
-            <h2>Общий рейтинг компании {{result?.company_name}}:</h2>
-            <n-progress type="circle" :stroke-width="10" :percentage="result.rating" v-if="result"  >
-              <template #default>
-                <span style="font-size: 30px">{{result.rating_name}}</span>
-              </template>
-            </n-progress>
-          </n-space>
-          <n-space style="width: 100%" :wrap="false" :wrap-item="false" justify="space-between" >
-            <n-card style="width: 100%"  >
-              <h2>Положительные фразы:</h2>
-              <n-divider style="margin-bottom: 1rem"/>
-              <n-scrollbar style="max-height: 500px">
-                <ul>
-                  <li v-for="(item, idx) in result?.positive" :key="item">
-                    {{idx + 1}}.{{item}}
-                  </li>
-                </ul>
-              </n-scrollbar>
-            </n-card>
-            <n-card style="width: 100%" >
-              <h2>Отрицательные фразы:</h2>
-              <n-divider style="margin-bottom: 1rem"/>
-              <n-scrollbar style="max-height: 500px">
-                <ul>
-                  <li v-for="(item, idx) in result?.negative" :key="item">
-                    {{idx + 1}}.{{item}}
-                  </li>
-                </ul>
-              </n-scrollbar>
-            </n-card>
-          </n-space>
+        <TextEditor />
         <n-space justify="center" style="margin-top: 2rem">
           <n-button @click="sendNewRequest" type="primary" style="width: 300px; border-radius: 0.5rem;" >Отправить новый запрос</n-button>
         </n-space>
@@ -77,20 +47,17 @@ import { ArchiveOutline } from '@vicons/ionicons5'
 import { useNotification } from 'naive-ui'
 import type { UploadFileInfo } from 'naive-ui'
 import AppHeader from "@/components/UI/AppHeader.vue";
+import TextEditor from "@/components/TextEditor.vue";
 
 
 interface IResult {
-  positive: string[],
-  negative: string[],
-  rating: number,
-  rating_name: string,
-  company_name: string
+  html: string
 }
 
 const notification = useNotification()
 
 const text = ref('')
-const fetchStatus = ref('init')
+const fetchStatus = ref('success')
 const result = ref<IResult | null>(null);
 
 const downloadFile = async (evt: UploadFileInfo): Promise<IResult | void> => {

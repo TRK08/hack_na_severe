@@ -1,0 +1,49 @@
+<template>
+  <div class="text-editor">
+    <quill-editor v-model:content="content" contentType="html" theme="snow" :modules="modules" toolbar="essential" style="min-height: 600px;"></quill-editor>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import htmlEditButton from "quill-html-edit-button";
+import {ref} from "vue";
+
+const modules = [
+  {
+    name: 'htmlEditButton',
+    module: htmlEditButton,
+    options: {
+      msg: 'Редактиование HTML разметки',
+      okText: 'Сохранить',
+      cancelText: 'Отмена',
+    }
+  }
+]
+const content = ref('')
+</script>
+
+<style lang="scss">
+.ql-toolbar {
+  border-radius: 1rem 1rem 0 0;
+}
+.ql-container {
+  border-radius: 0 0 1rem 1rem;
+}
+.ql-html-popupTitle {
+  font-size: 2rem;
+  font-style: initial!important;
+  margin-bottom: 1rem!important;
+}
+.ql-html-textArea {
+  border-radius: 1rem;
+  padding-bottom: 2rem;
+}
+.ql-html-buttonGroup {
+  button {
+    cursor: pointer;
+
+  }
+}
+</style>

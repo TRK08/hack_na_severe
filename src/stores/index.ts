@@ -7,6 +7,6 @@ interface IState {
 }
 export const useGlobalStore = defineStore('global',  {
     state: (): IState => ({
-        theme: darkTheme
+        theme: null
     })
 })

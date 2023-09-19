@@ -2,7 +2,7 @@
   <n-layout-sider
       class="sidebar"
       :width="100"
-      :collapsed-width="100"
+      :collapsed-width="0"
       collapse-mode="width"
   >
     <n-space vertical :size="[0, 0]" align="center" :wrap-item="false" style="height: 100%; overflow: hidden;">
