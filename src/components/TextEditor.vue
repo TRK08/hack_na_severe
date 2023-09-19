@@ -1,6 +1,6 @@
 <template>
   <div class="text-editor">
-    <quill-editor v-model:content="content" theme="snow" :modules="modules" toolbar="essential" style="min-height: 600px;"></quill-editor>
+    <quill-editor v-model:content="content" theme="snow" :modules="modules" content-type="html" toolbar="essential" style="min-height: 600px;"></quill-editor>
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import htmlEditButton from "quill-html-edit-button";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 
 const modules = [
   {
@@ -21,7 +21,18 @@ const modules = [
     }
   }
 ]
-const content = ref('')
+
+const props = defineProps<{html: string}>()
+const emit = defineEmits(['update:html'])
+
+
+const content = ref(props.html || '')
+
+
+watch(content, () => {
+  emit('update:html', content.value)
+}, { immediate: true })
+
 </script>
 
 <style lang="scss">
